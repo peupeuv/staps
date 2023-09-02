@@ -23,3 +23,12 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/welcome-webpage:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/welcome-webpage:latest
+
+      - name: Trigger Swarmpit Redeploy
+        run: |
+          curl -X POST "$SWARMPIT_URL/api/services/$SERVICE_ID/redeploy" \
+            -H "Authorization: Bearer $SWARMPIT_TOKEN"
+        env:
+          SWARMPIT_URL: ${{ secrets.SWARMPIT_URL }}
+          SWARMPIT_TOKEN: ${{ secrets.SWARMPIT_TOKEN }}
+          SERVICE_ID: ${{ secrets.SERVICE_ID }}
